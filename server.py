@@ -7,7 +7,6 @@ import os
 import time
 from dotenv import load_dotenv
 import io
-from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 load_dotenv()
 
@@ -74,28 +73,44 @@ async def talk(file: UploadFile = File(...)):
         upload_url = "https://api.assemblyai.com/v2/upload"
         headers = {"authorization": ASSEMBLY_API_KEY}
         
-        # Use MultipartEncoder to ensure proper content-type is set
-        # This explicitly sets the MIME type for the file part
-        multipart_data = MultipartEncoder(
-            fields={
-                'file': ('recording.webm', audio_data, 'audio/webm')
-            }
-        )
+        # Determine content type from uploaded file or default to webm
+        content_type = file.content_type or "audio/webm"
+        filename = file.filename or "recording.webm"
         
-        headers['Content-Type'] = multipart_data.content_type
+        # Normalize content type - remove codec info if present
+        if ';' in content_type:
+            content_type = content_type.split(';')[0]
         
-        # Upload with properly formatted multipart data
+        # Map to AssemblyAI supported types
+        # AssemblyAI supports: mp3, wav, m4a, webm, ogg, flac, wma, aac, opus
+        if content_type not in ['audio/webm', 'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a']:
+            # If unknown type, try webm
+            content_type = "audio/webm"
+            if not filename.endswith('.webm'):
+                filename = "recording.webm"
+        
+        # Ensure filename matches content type
+        if content_type == "audio/webm" and not filename.endswith('.webm'):
+            filename = "recording.webm"
+        elif content_type == "audio/mpeg" and not filename.endswith('.mp3'):
+            filename = "recording.mp3"
+        elif content_type == "audio/wav" and not filename.endswith('.wav'):
+            filename = "recording.wav"
+        
+        # Upload to AssemblyAI
+        # Use tuple format: (filename, file_data, content_type)
         upload_resp = requests.post(
             upload_url,
             headers=headers,
-            data=multipart_data,
+            files={'file': (filename, audio_data, content_type)},
             timeout=30
         )
         
         if upload_resp.status_code != 200:
+            error_detail = upload_resp.text
             raise HTTPException(
                 status_code=upload_resp.status_code,
-                detail=f"AssemblyAI upload failed: {upload_resp.text}"
+                detail=f"AssemblyAI upload failed: {error_detail}"
             )
         
         audio_url = upload_resp.json()['upload_url']
