@@ -108,12 +108,27 @@ async def talk(file: UploadFile = File(...)):
         
         if upload_resp.status_code != 200:
             error_detail = upload_resp.text
+            print(f"AssemblyAI upload failed: Status {upload_resp.status_code}, Response: {error_detail}")
             raise HTTPException(
                 status_code=upload_resp.status_code,
                 detail=f"AssemblyAI upload failed: {error_detail}"
             )
         
-        audio_url = upload_resp.json()['upload_url']
+        # Parse response JSON
+        try:
+            upload_response_json = upload_resp.json()
+            audio_url = upload_response_json.get('upload_url')
+            if not audio_url:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"AssemblyAI upload succeeded but no upload_url in response: {upload_response_json}"
+                )
+        except ValueError as e:
+            print(f"Failed to parse AssemblyAI upload response: {upload_resp.text}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Invalid response from AssemblyAI: {upload_resp.text[:200]}"
+            )
         
         # 2. Transcribe audio
         transcribe_url = "https://api.assemblyai.com/v2/transcript"
@@ -245,7 +260,14 @@ async def talk(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"Unhandled exception in /talk endpoint: {str(e)}")
+        print(f"Traceback: {error_trace}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Internal server error: {str(e)}"
+        )
 
 
 @app.post("/reset")
