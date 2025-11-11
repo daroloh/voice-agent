@@ -73,18 +73,23 @@ async def talk(file: UploadFile = File(...)):
         upload_url = "https://api.assemblyai.com/v2/upload"
         headers = {"authorization": ASSEMBLY_API_KEY}
         
-        # Determine content type - default to webm if not specified
-        content_type = file.content_type or "audio/webm"
+        # Force audio/webm content type - MediaRecorder always produces webm
+        # This ensures AssemblyAI receives the correct MIME type
+        content_type = "audio/webm"
         filename = file.filename or "recording.webm"
         
-        # Ensure proper MIME type for AssemblyAI
-        if not content_type.startswith("audio/"):
-            content_type = "audio/webm"
+        # Ensure filename has .webm extension
+        if not filename.endswith('.webm'):
+            filename = filename.rsplit('.', 1)[0] + '.webm' if '.' in filename else filename + '.webm'
         
+        # Upload using files parameter - pass bytes directly with explicit content-type
+        # The tuple format is: (filename, file_data, content_type)
+        # This ensures AssemblyAI receives the correct MIME type
         upload_resp = requests.post(
             upload_url,
             headers=headers,
-            files={"file": (filename, audio_data, content_type)}
+            files={"file": (filename, audio_data, content_type)},
+            timeout=30
         )
         
         if upload_resp.status_code != 200:
