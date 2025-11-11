@@ -259,20 +259,44 @@
         async function startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                // Use webm codec for better compatibility
+                const options = { mimeType: 'audio/webm;codecs=opus' };
+                // Fallback if webm not supported
+                const mimeType = MediaRecorder.isTypeSupported(options.mimeType) 
+                    ? options.mimeType 
+                    : 'audio/webm';
+                mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
                 audioChunks = [];
 
                 mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
                 };
 
                 mediaRecorder.onstop = async () => {
+                    // Ensure we have audio data
+                    if (audioChunks.length === 0) {
+                        showStatus('No audio recorded. Please try again.', 'error');
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    
+                    // Validate blob size (at least 1KB)
+                    if (audioBlob.size < 1024) {
+                        showStatus('Recording too short. Please record for at least 1 second.', 'error');
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    
                     await sendAudio(audioBlob);
                     stream.getTracks().forEach(track => track.stop());
                 };
 
-                mediaRecorder.start();
+                // Start recording with timeslice to ensure data is captured
+                mediaRecorder.start(1000); // Capture data every second
                 isRecording = true;
                 recordBtn.classList.add('recording');
                 recordIcon.textContent = '⏹️';
@@ -304,6 +328,7 @@
 
             try {
                 const formData = new FormData();
+                // Use proper filename and MIME type for AssemblyAI
                 formData.append('file', audioBlob, 'recording.webm');
 
                 const response = await fetch(`${API_URL}/talk`, {

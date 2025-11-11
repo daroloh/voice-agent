@@ -66,13 +66,25 @@ async def talk(file: UploadFile = File(...)):
         # 1. Upload audio to AssemblyAI
         audio_data = await file.read()
         
+        # Validate audio data
+        if not audio_data or len(audio_data) == 0:
+            raise HTTPException(status_code=400, detail="Empty audio file received")
+        
         upload_url = "https://api.assemblyai.com/v2/upload"
         headers = {"authorization": ASSEMBLY_API_KEY}
+        
+        # Determine content type - default to webm if not specified
+        content_type = file.content_type or "audio/webm"
+        filename = file.filename or "recording.webm"
+        
+        # Ensure proper MIME type for AssemblyAI
+        if not content_type.startswith("audio/"):
+            content_type = "audio/webm"
         
         upload_resp = requests.post(
             upload_url,
             headers=headers,
-            files={"file": (file.filename, audio_data, file.content_type)}
+            files={"file": (filename, audio_data, content_type)}
         )
         
         if upload_resp.status_code != 200:
