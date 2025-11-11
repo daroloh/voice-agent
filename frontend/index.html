@@ -324,8 +324,8 @@
                 addMessage(userText, true);
 
                 // Get audio response
-                const audioBlob = await response.blob();
-                const audioUrl = URL.createObjectURL(audioBlob);
+                const responseAudioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(responseAudioBlob);
                 const audio = new Audio(audioUrl);
 
                 // Add assistant message to conversation
