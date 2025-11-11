@@ -7,6 +7,7 @@ import os
 import time
 from dotenv import load_dotenv
 import io
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 load_dotenv()
 
@@ -73,22 +74,21 @@ async def talk(file: UploadFile = File(...)):
         upload_url = "https://api.assemblyai.com/v2/upload"
         headers = {"authorization": ASSEMBLY_API_KEY}
         
-        # Force audio/webm content type - MediaRecorder always produces webm
-        # This ensures AssemblyAI receives the correct MIME type
-        content_type = "audio/webm"
-        filename = file.filename or "recording.webm"
+        # Use MultipartEncoder to ensure proper content-type is set
+        # This explicitly sets the MIME type for the file part
+        multipart_data = MultipartEncoder(
+            fields={
+                'file': ('recording.webm', audio_data, 'audio/webm')
+            }
+        )
         
-        # Ensure filename has .webm extension
-        if not filename.endswith('.webm'):
-            filename = filename.rsplit('.', 1)[0] + '.webm' if '.' in filename else filename + '.webm'
+        headers['Content-Type'] = multipart_data.content_type
         
-        # Upload using files parameter - pass bytes directly with explicit content-type
-        # The tuple format is: (filename, file_data, content_type)
-        # This ensures AssemblyAI receives the correct MIME type
+        # Upload with properly formatted multipart data
         upload_resp = requests.post(
             upload_url,
             headers=headers,
-            files={"file": (filename, audio_data, content_type)},
+            data=multipart_data,
             timeout=30
         )
         
