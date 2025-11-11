@@ -71,38 +71,32 @@ async def talk(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="Empty audio file received")
         
         upload_url = "https://api.assemblyai.com/v2/upload"
-        headers = {"authorization": ASSEMBLY_API_KEY}
         
-        # Determine content type from uploaded file or default to webm
+        # Determine content type from uploaded file
         content_type = file.content_type or "audio/webm"
-        filename = file.filename or "recording.webm"
         
         # Normalize content type - remove codec info if present
         if ';' in content_type:
             content_type = content_type.split(';')[0]
         
-        # Map to AssemblyAI supported types
-        # AssemblyAI supports: mp3, wav, m4a, webm, ogg, flac, wma, aac, opus
-        if content_type not in ['audio/webm', 'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a']:
-            # If unknown type, try webm
+        # Ensure we use a supported type - default to webm
+        if content_type not in ['audio/webm', 'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4']:
             content_type = "audio/webm"
-            if not filename.endswith('.webm'):
-                filename = "recording.webm"
         
-        # Ensure filename matches content type
-        if content_type == "audio/webm" and not filename.endswith('.webm'):
-            filename = "recording.webm"
-        elif content_type == "audio/mpeg" and not filename.endswith('.mp3'):
-            filename = "recording.mp3"
-        elif content_type == "audio/wav" and not filename.endswith('.wav'):
-            filename = "recording.wav"
+        # Try uploading as raw binary with explicit Content-Type header
+        # This is AssemblyAI's preferred method for direct file uploads
+        headers = {
+            "authorization": ASSEMBLY_API_KEY,
+            "content-type": content_type
+        }
         
-        # Upload to AssemblyAI
-        # Use tuple format: (filename, file_data, content_type)
+        print(f"Uploading to AssemblyAI: {len(audio_data)} bytes, content-type: {content_type}")
+        
+        # Upload as raw binary data (not multipart)
         upload_resp = requests.post(
             upload_url,
             headers=headers,
-            files={'file': (filename, audio_data, content_type)},
+            data=audio_data,
             timeout=30
         )
         
@@ -168,9 +162,12 @@ async def talk(file: UploadFile = File(...)):
                 text = status_data.get('text', '')
                 break
             elif status == 'error':
+                error_msg = status_data.get('error', 'Unknown error')
+                print(f"AssemblyAI transcription error: {error_msg}")
+                print(f"Full status data: {status_data}")
                 raise HTTPException(
                     status_code=500,
-                    detail=f"Transcription error: {status_data.get('error', 'Unknown error')}"
+                    detail=f"Transcription error: {error_msg}"
                 )
             
             time.sleep(1)  # Wait 1 second before polling again
