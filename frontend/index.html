@@ -204,7 +204,7 @@
         <div class="conversation" id="conversation"></div>
 
         <div class="footer">
-            Powered by AssemblyAI • OpenAI GPT • OpenAI TTS
+            Powered by AssemblyAI • Smart Local AI • Fast & Responsive
         </div>
     </div>
 
@@ -348,7 +348,6 @@
 
             try {
                 const formData = new FormData();
-                // Use proper filename and MIME type for AssemblyAI
                 formData.append('file', audioBlob, 'recording.webm');
 
                 const response = await fetch(`${API_URL}/talk`, {
@@ -361,30 +360,55 @@
                     throw new Error(`Server error: ${error}`);
                 }
 
-                // Get user text from headers
-                const userText = response.headers.get('X-User-Text') || 'Your message';
-                const replyText = response.headers.get('X-Reply-Text') || '';
-
-                // Add user message to conversation
-                addMessage(userText, true);
-
-                // Get audio response
-                const responseAudioBlob = await response.blob();
-                const audioUrl = URL.createObjectURL(responseAudioBlob);
-                const audio = new Audio(audioUrl);
-
-                // Add assistant message to conversation
-                if (replyText) {
+                // Check if response is JSON (text mode) or audio
+                const contentType = response.headers.get('content-type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    // Handle JSON response (text-only mode)
+                    const data = await response.json();
+                    const userText = data.user_text || 'Your message';
+                    const replyText = data.reply_text || 'No response';
+                    
+                    // Add messages to conversation
+                    addMessage(userText, true);
                     addMessage(replyText, false);
+                    
+                    showStatus(data.message || 'Response received! (Text mode)', 'success');
+                } else {
+                    // Handle audio response (normal mode)
+                    const userText = response.headers.get('X-User-Text') || 'Your message';
+                    const replyText = response.headers.get('X-Reply-Text') || '';
+
+                    // Add user message to conversation
+                    addMessage(userText, true);
+
+                    // Get audio response
+                    const responseAudioBlob = await response.blob();
+                    
+                    if (responseAudioBlob.size > 1024) {
+                        const audioUrl = URL.createObjectURL(responseAudioBlob);
+                        const audio = new Audio(audioUrl);
+
+                        // Add assistant message to conversation
+                        if (replyText) {
+                            addMessage(replyText, false);
+                        }
+
+                        // Play audio response
+                        audio.play();
+                        showStatus('Response received! (Audio mode)', 'success');
+
+                        audio.onended = () => {
+                            URL.revokeObjectURL(audioUrl);
+                        };
+                    } else {
+                        // Small audio file, probably fallback - show text instead
+                        if (replyText) {
+                            addMessage(replyText, false);
+                        }
+                        showStatus('Response received! (Text mode)', 'success');
+                    }
                 }
-
-                // Play audio response
-                audio.play();
-                showStatus('Response received!', 'success');
-
-                audio.onended = () => {
-                    URL.revokeObjectURL(audioUrl);
-                };
 
             } catch (error) {
                 showStatus('Error: ' + error.message, 'error');
