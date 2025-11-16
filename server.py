@@ -304,7 +304,7 @@ async def talk(file: UploadFile = File(...)):
             if ollama_resp.status_code == 200:
                 ollama_data = ollama_resp.json()
                 reply = ollama_data["message"]["content"]
-                print(f"✅ Ollama response: {reply[:50]}...")
+                print(f"Ollama response: {reply[:50]}...")
             else:
                 print(f"Ollama error: {ollama_resp.text}")
                 reply = generate_smart_response(text, conversation_history)

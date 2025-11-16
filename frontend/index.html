@@ -188,14 +188,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎤 Voice-to-Voice AI Agent</h1>
+        <h1>Voice-to-Voice AI Agent</h1>
         <p class="subtitle">Speak naturally and get AI-powered voice responses</p>
 
         <div id="status" class="status"></div>
 
         <div class="button-group">
             <button id="recordBtn" class="record-btn">
-                <span id="recordIcon">🎤</span>
+                <span id="recordIcon">Record</span>
                 <span id="recordText">Start Recording</span>
             </button>
             <button id="resetBtn" class="reset-btn">Reset Chat</button>
@@ -319,7 +319,7 @@
                 mediaRecorder.start(1000); // Capture data every second
                 isRecording = true;
                 recordBtn.classList.add('recording');
-                recordIcon.textContent = '⏹️';
+                recordIcon.textContent = 'Stop';
                 recordText.textContent = 'Stop Recording';
                 showStatus('Recording... Speak now!', 'info');
             } catch (error) {
@@ -334,7 +334,7 @@
                 mediaRecorder.stop();
                 isRecording = false;
                 recordBtn.classList.remove('recording');
-                recordIcon.textContent = '🎤';
+                recordIcon.textContent = 'Record';
                 recordText.textContent = 'Start Recording';
                 showStatus('Processing your message...', 'info');
             }
@@ -415,7 +415,7 @@
                 console.error('Error sending audio:', error);
             } finally {
                 recordBtn.disabled = false;
-                recordIcon.textContent = '🎤';
+                recordIcon.textContent = 'Record';
                 recordText.textContent = 'Start Recording';
             }
         }

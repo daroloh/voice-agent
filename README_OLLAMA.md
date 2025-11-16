@@ -1,8 +1,8 @@
-# 🎤 Voice-to-Voice AI Agent (Ollama Edition)
+# Voice-to-Voice AI Agent (Ollama Edition)
 
 A full-stack conversational AI agent that enables natural voice-to-voice interactions using **Ollama** for free, local AI processing. Users speak into their microphone, the audio is transcribed, processed by a local Ollama model, and a voice response is generated and played back.
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 User speaks → AssemblyAI (STT) → Ollama (Local LLM) → Edge TTS → User hears reply
@@ -16,7 +16,7 @@ User speaks → AssemblyAI (STT) → Ollama (Local LLM) → Edge TTS → User he
 - **Conversation Logic**: Ollama (Local LLM - llama3.2, mistral, etc.)
 - **Text-to-Speech**: Microsoft Edge TTS (free)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -108,7 +108,7 @@ User speaks → AssemblyAI (STT) → Ollama (Local LLM) → Edge TTS → User he
    - Click "Stop Recording"
    - Wait for the AI response
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 VoiceAgent/
@@ -123,7 +123,7 @@ VoiceAgent/
     └── index.html       # Frontend UI
 ```
 
-## 🔧 API Endpoints
+## API Endpoints
 
 ### `POST /talk`
 Main endpoint that processes audio input.
@@ -166,7 +166,7 @@ Reset conversation history.
 {"message": "Conversation history reset"}
 ```
 
-## 🎯 How It Works
+## How It Works
 
 ### 1. Speech-to-Text (AssemblyAI)
 - User records audio via browser microphone
@@ -200,7 +200,7 @@ To switch models:
 2. Update your `.env` file: `OLLAMA_MODEL=model_name`
 3. Restart the server
 
-## 💰 Cost Comparison
+## Cost Comparison
 
 ### This Ollama Setup
 - **Ollama**: FREE (runs locally)
@@ -214,7 +214,7 @@ To switch models:
 - **AssemblyAI**: ~$0.37/hour of audio
 - **Total**: Varies, but TTS can be expensive
 
-## 🚢 Deployment
+## Deployment
 
 **Note**: Deploying Ollama requires more resources than typical cloud free tiers.
 
@@ -228,20 +228,20 @@ To switch models:
 2. **GPU Instances** - For faster model inference
 3. **Hybrid** - Backend on cloud, Ollama locally (modify OLLAMA_BASE_URL)
 
-## 🎨 Features
+## Features
 
-- ✅ Real-time voice recording
-- ✅ Speech-to-text transcription (AssemblyAI)
-- ✅ **Local LLM processing (Ollama)**
-- ✅ **Free text-to-speech (Edge TTS)**
-- ✅ Context-aware AI responses
-- ✅ Conversation history
-- ✅ Modern, responsive UI
-- ✅ Error handling and fallbacks
-- ✅ **Privacy-focused (LLM runs locally)**
-- ✅ **Cost-effective (minimal API usage)**
+- Real-time voice recording
+- Speech-to-text transcription (AssemblyAI)
+- **Local LLM processing (Ollama)**
+- **Free text-to-speech (Edge TTS)**
+- Context-aware AI responses
+- Conversation history
+- Modern, responsive UI
+- Error handling and fallbacks
+- **Privacy-focused (LLM runs locally)**
+- **Cost-effective (minimal API usage)**
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] Model switching UI
 - [ ] Streaming responses from Ollama
@@ -252,7 +252,7 @@ To switch models:
 - [ ] Multi-language support
 - [ ] Docker containerization
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Ollama Issues
 - **Ollama not responding**: Check if `ollama serve` is running
@@ -269,18 +269,18 @@ To switch models:
 - **TTS not working**: Check if edge-tts is installed: `pip install edge-tts`
 - **API errors**: Verify AssemblyAI key is correct
 
-## 🔒 Privacy & Security
+## Privacy & Security
 
 - **LLM Processing**: 100% local, nothing sent to external services
 - **Speech-to-Text**: Uses AssemblyAI (audio sent to their servers)
 - **Text-to-Speech**: Uses Microsoft Edge TTS (text sent to Microsoft)
 - **Conversation History**: Stored locally in memory (resets on restart)
 
-## 📝 License
+## License
 
 MIT License - feel free to use this project for your portfolio or learning!
 
-## 🙏 Credits
+## Credits
 
 - [Ollama](https://ollama.ai/) for local LLM hosting
 - [AssemblyAI](https://www.assemblyai.com/) for speech-to-text

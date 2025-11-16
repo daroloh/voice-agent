@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide
+# Deployment Guide
 
 This guide will walk you through deploying your Voice-to-Voice AI Agent to various hosting platforms.
 
@@ -11,7 +11,7 @@ This guide will walk you through deploying your Voice-to-Voice AI Agent to vario
 
 ---
 
-## Option 1: Render (Recommended for Beginners) 🎨
+## Option 1: Render (Recommended for Beginners)
 
 Render is user-friendly and offers a free tier perfect for this project.
 
@@ -177,7 +177,7 @@ docker run -p 8000:8000 \
 
 ---
 
-## Option 5: Separate Frontend + Backend (Advanced) 🎯
+## Option 5: Separate Frontend + Backend (Advanced)
 
 Deploy frontend and backend separately for better scalability.
 
@@ -212,7 +212,7 @@ Follow any of the options above (Render, Railway, Heroku, etc.)
 
 ---
 
-## 🔧 Post-Deployment Configuration
+## Post-Deployment Configuration
 
 ### 1. Custom Domain (Optional)
 
@@ -233,7 +233,7 @@ All platforms above provide HTTPS by default. Make sure your app uses HTTPS for 
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: Microphone not working
 
@@ -273,7 +273,7 @@ All platforms above provide HTTPS by default. Make sure your app uses HTTPS for 
 
 ---
 
-## 📊 Monitoring & Logs
+## Monitoring & Logs
 
 ### Render
 - Go to "Logs" tab in your service dashboard
@@ -289,7 +289,7 @@ All platforms above provide HTTPS by default. Make sure your app uses HTTPS for 
 
 ---
 
-## 🚀 Next Steps
+## Next Steps
 
 After deployment:
 
@@ -305,7 +305,7 @@ After deployment:
 
 ---
 
-## 💡 Cost Estimates
+## Cost Estimates
 
 ### Free Tier Limits:
 
@@ -324,7 +324,7 @@ After deployment:
 
 ---
 
-## ✅ Deployment Checklist
+## Deployment Checklist
 
 - [ ] API keys configured
 - [ ] Environment variables set
@@ -342,7 +342,7 @@ After deployment:
 
 ---
 
-## 🎉 You're Done!
+## You're Done!
 
 Your voice agent is now live on the web! Share the URL with others and start using it.
 

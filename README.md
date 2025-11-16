@@ -1,8 +1,8 @@
-# 🎤 Voice-to-Voice AI Agent
+# Voice-to-Voice AI Agent
 
 A full-stack conversational AI agent that enables natural voice-to-voice interactions. Users speak into their microphone, the audio is transcribed, processed by GPT, and a voice response is generated and played back.
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 User speaks → AssemblyAI (STT) → OpenAI GPT → OpenAI TTS → User hears reply
@@ -16,7 +16,7 @@ User speaks → AssemblyAI (STT) → OpenAI GPT → OpenAI TTS → User hears re
 - **Conversation Logic**: OpenAI GPT-4o-mini
 - **Text-to-Speech**: OpenAI TTS
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -71,7 +71,7 @@ User speaks → AssemblyAI (STT) → OpenAI GPT → OpenAI TTS → User hears re
    - Click "Stop Recording"
    - Wait for the AI response
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 VoiceAgent/
@@ -85,7 +85,7 @@ VoiceAgent/
     └── index.html       # Frontend UI
 ```
 
-## 🔧 API Endpoints
+## API Endpoints
 
 ### `POST /talk`
 Main endpoint that processes audio input.
@@ -118,7 +118,7 @@ Health check endpoint.
 }
 ```
 
-## 🎯 How It Works
+## How It Works
 
 ### 1. Speech-to-Text (AssemblyAI)
 - User records audio via browser microphone
@@ -136,7 +136,7 @@ Health check endpoint.
 - Audio is streamed back to frontend
 - Frontend plays the audio response
 
-## 🚢 Deployment
+## Deployment
 
 ### Quick Start
 
@@ -180,17 +180,17 @@ For detailed instructions on deploying to Render, Railway, Heroku, Docker, and m
 - **Docker** - Deploy anywhere (AWS, GCP, Azure, etc.)
 - **Separate Frontend/Backend** - For advanced setups
 
-## 🎨 Features
+## Features
 
-- ✅ Real-time voice recording
-- ✅ Speech-to-text transcription
-- ✅ Context-aware AI responses
-- ✅ Text-to-speech playback
-- ✅ Conversation history
-- ✅ Modern, responsive UI
-- ✅ Error handling
+- Real-time voice recording
+- Speech-to-text transcription
+- Context-aware AI responses
+- Text-to-speech playback
+- Conversation history
+- Modern, responsive UI
+- Error handling
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] Streaming responses (AssemblyAI Realtime API)
 - [ ] Multi-language support
@@ -200,7 +200,7 @@ For detailed instructions on deploying to Render, Railway, Heroku, Docker, and m
 - [ ] Voice activity detection (auto-start/stop)
 - [ ] Multiple TTS voice options
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Microphone not working
 - Check browser permissions for microphone access
@@ -219,11 +219,11 @@ For detailed instructions on deploying to Render, Railway, Heroku, Docker, and m
 - Ensure browser supports the audio format
 - Check browser console for errors
 
-## 📝 License
+## License
 
 MIT License - feel free to use this project for your portfolio or learning!
 
-## 🙏 Credits
+## Credits
 
 - [AssemblyAI](https://www.assemblyai.com/) for speech-to-text
 - [OpenAI](https://openai.com/) for GPT and TTS
